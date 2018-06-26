@@ -20,13 +20,21 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.squareup</groupId>
-      <artifactId>javapoet</artifactId>
-      <version>1.11.1</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.squareup</groupId>-->
+      <!--<artifactId>javapoet</artifactId>-->
+      <!--<version>1.11.1</version>-->
+    <!--</dependency>-->
 
-    <dependency>
+      <dependency>
+          <groupId>com.alibaba</groupId>
+          <artifactId>fastjson</artifactId>
+          <version>1.2.47</version>
+      </dependency>
+
+
+
+      <dependency>
       <groupId>com.sun</groupId>
       <artifactId>tools</artifactId>
       <version>1.8</version>
