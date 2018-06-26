@@ -15,7 +15,6 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class WebProcessor extends AbstractProcessor {
 
     static final String DELETEMAPPING_ANNOTATION = "org.springframework.web.bind.annotation.DeleteMapping";
 
-    private static final Map<String, Class<?>> ANNOTATION_CLASS_MAP = new HashMap<>(16);
+    //private static final Map<String, Class<?>> ANNOTATION_CLASS_MAP = new HashMap<>(16);
 
     private Elements elementUtils;
     private Messager messager;
@@ -70,7 +69,6 @@ public class WebProcessor extends AbstractProcessor {
             Set<? extends Element> restControllerSet = roundEnv.getElementsAnnotatedWith(restControllerEle);
             docClassSet.addAll(restControllerSet);
         }
-
         TypeElement controllerEle = elementUtils.getTypeElement(CONTROLLER_ANNOTATION);
         if (controllerEle != null) {
             Set<? extends Element> controllerSet = roundEnv.getElementsAnnotatedWith(controllerEle);
@@ -79,7 +77,7 @@ public class WebProcessor extends AbstractProcessor {
 
         processDocClasses(docClassSet);
 
-        Set<Element> docMethodSet = new HashSet<>(256);
+        Set<Element> docMethodSet = new HashSet<>(128);
         TypeElement requestMappingEle = elementUtils.getTypeElement(REQUESTMAPPING_ANNOTATION);
         if (requestMappingEle != null) {
             docMethodSet.addAll(roundEnv.getElementsAnnotatedWith(requestMappingEle));
@@ -116,7 +114,7 @@ public class WebProcessor extends AbstractProcessor {
 
     private void processDocMethods(Set<Element> docMethodSet) {
         for (Element ele : docMethodSet) {
-            if (ele.getKind()!=ElementKind.METHOD){
+            if (ele.getKind() != ElementKind.METHOD) {
                 continue;
             }
             AnnotatedMethod method = new AnnotatedMethod((ExecutableElement) ele, elementUtils.getDocComment(ele));
@@ -135,7 +133,7 @@ public class WebProcessor extends AbstractProcessor {
 
     private void processDocClasses(Set<Element> docClassSet) {
         for (Element ele : docClassSet) {
-            if (ele.getKind()!=ElementKind.CLASS){
+            if (ele.getKind() != ElementKind.CLASS) {
                 continue;
             }
             String className = ((TypeElement) ele).getQualifiedName().toString();
@@ -152,62 +150,59 @@ public class WebProcessor extends AbstractProcessor {
             return;
         }
         FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", METADATA_PATH);
-        OutputStream outputStream = resource.openOutputStream();
-        try {
+        try (OutputStream outputStream = resource.openOutputStream()) {
             String json = JSON.toJSONString(docClassMap, SerializerFeature.PrettyFormat,
                     SerializerFeature.SkipTransientField);
             outputStream.write(json.getBytes("UTF-8"));
-        } finally {
-            outputStream.close();
         }
     }
 
-    private void processMethod(ExecutableElement ele) {
-        if (hasAnyAnnotation(ele, REQUESTMAPPING_ANNOTATION, GETMAPPING_ANNOTATION, POSTMAPPING_ANNOTATION,
-                DELETEMAPPING_ANNOTATION, PUTMAPPING_ANNOTATION)) {
+//    private void processMethod(ExecutableElement ele) {
+//        if (hasAnyAnnotation(ele, REQUESTMAPPING_ANNOTATION, GETMAPPING_ANNOTATION, POSTMAPPING_ANNOTATION,
+//                DELETEMAPPING_ANNOTATION, PUTMAPPING_ANNOTATION)) {
+//
+//        }
+//    }
+//
+//    private void processClass(TypeElement ele) {
+//        //处理@Controller和@RestController注解
+//        if (hasAnyAnnotation(ele, CONTROLLER_ANNOTATION, RESTCONTROLLER_ANNOTATION)) {
+//
+//        }
+//    }
 
-        }
-    }
-
-    private void processClass(TypeElement ele) {
-        //处理@Controller和@RestController注解
-        if (hasAnyAnnotation(ele, CONTROLLER_ANNOTATION, RESTCONTROLLER_ANNOTATION)) {
-
-        }
-    }
-
-    protected boolean hasAnnotation(Element e, String annotationClassName) {
-        Class<Annotation> annotation = getAnnotationClass(RESTCONTROLLER_ANNOTATION);
-        return annotation != null && e.getAnnotation(annotation) != null;
-    }
-
-    protected boolean hasAnyAnnotation(Element e, String... annotationClassNames) {
-        if (annotationClassNames == null || annotationClassNames.length == 0) {
-            return false;
-        }
-
-        for (String name : annotationClassNames) {
-            if (hasAnnotation(e, name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Class<Annotation> getAnnotationClass(String annotationClassName) {
-        Class<?> aClass = ANNOTATION_CLASS_MAP.get(annotationClassName);
-        if (aClass == null) {
-            try {
-                aClass = Class.forName(annotationClassName);
-                ANNOTATION_CLASS_MAP.put(annotationClassName, aClass);
-            } catch (ClassNotFoundException e) {
-                messager.printMessage(Diagnostic.Kind.WARNING, annotationClassName + "不存在");
-                return null;
-            }
-        }
-        return (Class<Annotation>) aClass;
-    }
+//    protected boolean hasAnnotation(Element e, String annotationClassName) {
+//        Class<Annotation> annotation = getAnnotationClass(annotationClassName);
+//        return annotation != null && e.getAnnotation(annotation) != null;
+//    }
+//
+//    protected boolean hasAnyAnnotation(Element e, String... annotationClassNames) {
+//        if (annotationClassNames == null || annotationClassNames.length == 0) {
+//            return false;
+//        }
+//
+//        for (String name : annotationClassNames) {
+//            if (hasAnnotation(e, name)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    protected Class<Annotation> getAnnotationClass(String annotationClassName) {
+//        Class<?> aClass = ANNOTATION_CLASS_MAP.get(annotationClassName);
+//        if (aClass == null) {
+//            try {
+//                aClass = Class.forName(annotationClassName);
+//                ANNOTATION_CLASS_MAP.put(annotationClassName, aClass);
+//            } catch (ClassNotFoundException e) {
+//                messager.printMessage(Diagnostic.Kind.WARNING, annotationClassName + "不存在");
+//                return null;
+//            }
+//        }
+//        return (Class<Annotation>) aClass;
+//    }
 
 
     @Override
