@@ -24,6 +24,8 @@ public class AnnotatedMethod {
         this.doc = doc;
     }
 
+    public AnnotatedMethod() {
+    }
 
     private String generateMethodName(ExecutableElement executableElement) {
         StringBuilder res = new StringBuilder();
@@ -43,6 +45,8 @@ public class AnnotatedMethod {
     public String getClassName() {
         return className;
     }
+
+
 
     public void setClassName(String className) {
         this.className = className;

@@ -16,8 +16,10 @@ public class AnnotatedClass {
 
     private List<AnnotatedMethod> methods=new LinkedList<>();
 
+    public AnnotatedClass() {
+    }
 
-    public AnnotatedClass(TypeElement typeElement,String doc){
+    public AnnotatedClass(TypeElement typeElement, String doc){
         this.className=typeElement.getQualifiedName().toString();
         this.doc=doc;
     }
@@ -51,4 +53,12 @@ public class AnnotatedClass {
         return methods;
     }
 
+    @Override
+    public String toString() {
+        return "AnnotatedClass{" +
+                "className='" + className + '\'' +
+                ", doc='" + doc + '\'' +
+                ", methods=" + methods +
+                '}';
+    }
 }

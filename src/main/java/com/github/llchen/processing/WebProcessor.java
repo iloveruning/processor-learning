@@ -66,13 +66,11 @@ public class WebProcessor extends AbstractProcessor {
         Set<Element> docClassSet = new HashSet<>(64);
         TypeElement restControllerEle = elementUtils.getTypeElement(RESTCONTROLLER_ANNOTATION);
         if (restControllerEle != null) {
-            Set<? extends Element> restControllerSet = roundEnv.getElementsAnnotatedWith(restControllerEle);
-            docClassSet.addAll(restControllerSet);
+            docClassSet.addAll(roundEnv.getElementsAnnotatedWith(restControllerEle));
         }
         TypeElement controllerEle = elementUtils.getTypeElement(CONTROLLER_ANNOTATION);
         if (controllerEle != null) {
-            Set<? extends Element> controllerSet = roundEnv.getElementsAnnotatedWith(controllerEle);
-            docClassSet.addAll(controllerSet);
+            docClassSet.addAll(roundEnv.getElementsAnnotatedWith(controllerEle));
         }
 
         processDocClasses(docClassSet);
